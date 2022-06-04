@@ -3,14 +3,13 @@ package configurations
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
 	_ "github.com/lib/pq"
 )
 
-func GetDbConnection() *sql.DB {
+func GetDbConnection() (*sql.DB, error) {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	user := os.Getenv("DB_USERNAME")
@@ -20,11 +19,11 @@ func GetDbConnection() *sql.DB {
 	connection, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		log.Fatalf("Fail to get database connection : %s", err)
-		return nil
+		return nil, err
 	}
 
 	err = connection.Ping()
+
 	limit := 0
 	for limit < 10 && err != nil {
 		time.Sleep(2 * time.Second)
@@ -35,20 +34,23 @@ func GetDbConnection() *sql.DB {
 	}
 
 	if err != nil {
-		log.Fatalf("Error DB Ping : %s", err)
-		return nil
+		return nil, err
 	}
 
-	return connection
+	return connection, nil
 }
 
 func RunQuery(sql string) (*sql.Rows, error) {
-	connection := GetDbConnection()
+	connection, err := GetDbConnection()
+
+	if err != nil {
+		return nil, err
+	}
+
 	data, err := connection.Query(sql)
 	defer connection.Close()
 
 	if err != nil {
-		log.Printf("Error when execute query : %s", err)
 		return nil, err
 	}
 

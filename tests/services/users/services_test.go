@@ -2,6 +2,7 @@ package tests
 
 import (
 	"database/sql"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -9,16 +10,16 @@ import (
 
 	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
-	entrypoint "github.com/GolangStudiy/go-users-postgres-rest-api/src/entrypoint/user"
+	domain "github.com/GolangStudiy/go-users-postgres-rest-api/src/domain/user"
 	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/users"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
 
 var connection *sql.DB
 
-func beforeTests(t *testing.T) {
-	db := tests.MountDatabaseContainer(t)
-	dbPort := db.GetPort(t)
+func beforeTests() {
+	db := tests.MountDatabaseContainer()
+	dbPort := db.GetPort()
 
 	os.Setenv("DB_HOST", "localhost")
 	os.Setenv("DB_PORT", strconv.Itoa(dbPort))
@@ -26,15 +27,20 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = configurations.GetDbConnection()
+	var err error
+	connection, err = configurations.GetDbConnection()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func TestShouldBeCreateUserAndReturnTheEmail(t *testing.T) {
-	beforeTests(t)
+	beforeTests()
 	db.Migrate()
 
 	email := "john@doe.com"
-	responseUser, err := services.Post(entrypoint.RequestUser{Email: email})
+	responseUser, err := services.Post(domain.User{Email: email})
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
@@ -46,11 +52,11 @@ func TestShouldBeCreateUserAndReturnTheEmail(t *testing.T) {
 }
 
 func TestShouldBeCreateUserAndReturnTheUUID(t *testing.T) {
-	beforeTests(t)
+	beforeTests()
 	db.Migrate()
 
 	email := "john@doe.com"
-	responseUser, err := services.Post(entrypoint.RequestUser{Email: email})
+	responseUser, err := services.Post(domain.User{Email: email})
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
@@ -68,17 +74,17 @@ func TestShouldBeCreateUserAndReturnTheUUID(t *testing.T) {
 }
 
 func TestShouldBeReturnNullIfTryToPostTheSameEmail(t *testing.T) {
-	beforeTests(t)
+	beforeTests()
 	db.Migrate()
 
 	email := "john@doe.com"
-	responseUser, err := services.Post(entrypoint.RequestUser{Email: email})
+	responseUser, err := services.Post(domain.User{Email: email})
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
 	}
 
-	responseUser, err = services.Post(entrypoint.RequestUser{Email: string(responseUser.Email)})
+	responseUser, err = services.Post(domain.User{Email: string(responseUser.Email)})
 
 	if err == nil || !strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
 		t.Errorf(err.Error())

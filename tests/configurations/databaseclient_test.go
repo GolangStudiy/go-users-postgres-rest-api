@@ -2,6 +2,7 @@ package tests
 
 import (
 	"database/sql"
+	"log"
 	"os"
 	"strconv"
 	"testing"
@@ -12,9 +13,9 @@ import (
 
 var connection *sql.DB
 
-func beforeTests(t *testing.T) {
-	db := tests.MountDatabaseContainer(t)
-	dbPort := db.GetPort(t)
+func beforeTests() {
+	db := tests.MountDatabaseContainer()
+	dbPort := db.GetPort()
 
 	os.Setenv("DB_HOST", "localhost")
 	os.Setenv("DB_PORT", strconv.Itoa(dbPort))
@@ -22,7 +23,12 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = configurations.GetDbConnection()
+	var err error
+	connection, err = configurations.GetDbConnection()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type databaseClass struct {
@@ -30,7 +36,7 @@ type databaseClass struct {
 }
 
 func TestShouldBeReturnConnection(t *testing.T) {
-	beforeTests(t)
+	beforeTests()
 
 	if connection == nil {
 		t.Errorf("Connection cannot be null")
@@ -38,9 +44,13 @@ func TestShouldBeReturnConnection(t *testing.T) {
 }
 
 func TestShouldBeReturnAllDatabaseNames(t *testing.T) {
-	beforeTests(t)
+	beforeTests()
 
-	rows := configurations.RunQuery("SELECT datname FROM pg_database")
+	rows, err := configurations.RunQuery("SELECT datname FROM pg_database")
+
+	if err != nil {
+		t.Errorf("Query should to return data")
+	}
 
 	databases := make([]databaseClass, 0)
 	var database databaseClass

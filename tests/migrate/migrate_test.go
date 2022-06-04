@@ -2,6 +2,7 @@ package tests
 
 import (
 	"database/sql"
+	"log"
 	"os"
 	"strconv"
 	"testing"
@@ -13,9 +14,9 @@ import (
 
 var connection *sql.DB
 
-func beforeTests(t *testing.T) {
-	db := tests.MountDatabaseContainer(t)
-	dbPort := db.GetPort(t)
+func beforeTests() {
+	db := tests.MountDatabaseContainer()
+	dbPort := db.GetPort()
 
 	os.Setenv("DB_HOST", "localhost")
 	os.Setenv("DB_PORT", strconv.Itoa(dbPort))
@@ -23,7 +24,12 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = configurations.GetDbConnection()
+	var err error
+	connection, err = configurations.GetDbConnection()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 type tableClass struct {
@@ -31,10 +37,14 @@ type tableClass struct {
 }
 
 func TestShouldBeCreateUsersTable(t *testing.T) {
-	beforeTests(t)
+	beforeTests()
 	db.Migrate()
 
-	rows := configurations.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
+	rows, err := configurations.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
+
+	if err != nil {
+		t.Errorf("Query should to return data")
+	}
 
 	var table tableClass
 	for rows.Next() {

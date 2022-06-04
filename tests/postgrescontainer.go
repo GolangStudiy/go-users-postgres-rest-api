@@ -3,10 +3,8 @@ package tests
 import (
 	"context"
 	"fmt"
-	"testing"
+	"log"
 	"time"
-
-	"github.com/stretchr/testify/require"
 
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -16,7 +14,7 @@ type TestDatabase struct {
 	instance testcontainers.Container
 }
 
-func MountDatabaseContainer(t *testing.T) *TestDatabase {
+func MountDatabaseContainer() *TestDatabase {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	req := testcontainers.ContainerRequest{
@@ -35,26 +33,28 @@ func MountDatabaseContainer(t *testing.T) *TestDatabase {
 		ContainerRequest: req,
 		Started:          true,
 	})
-	require.NoError(t, err)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &TestDatabase{
 		instance: postgres,
 	}
 }
 
-func (db *TestDatabase) GetPort(t *testing.T) int {
+func (db *TestDatabase) GetPort() int {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	p, err := db.instance.MappedPort(ctx, "5432")
-	require.NoError(t, err)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return p.Int()
 }
 
-func (db *TestDatabase) GetDbConnectionString(t *testing.T) string {
-	return fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", db.GetPort(t))
-}
-
-func (db *TestDatabase) Close(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
-	defer cancel()
-	require.NoError(t, db.instance.Terminate(ctx))
+func (db *TestDatabase) GetDbConnectionString() string {
+	return fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", db.GetPort())
 }
