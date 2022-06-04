@@ -1,7 +1,3 @@
-// usage:
-// testDB := testhelpers.NewTestDatabase(t)
-// defer testDB.Close(t)
-// println(testDB.ConnectionString(t))
 package postgrescontainer
 
 import (
@@ -20,7 +16,7 @@ type TestDatabase struct {
 	instance testcontainers.Container
 }
 
-func NewTestDatabase(t *testing.T) *TestDatabase {
+func MountDatabaseContainer(t *testing.T) *TestDatabase {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	req := testcontainers.ContainerRequest{

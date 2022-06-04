@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func getConnection() *sql.DB {
+func GetConnection() *sql.DB {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	user := os.Getenv("DB_USERNAME")
@@ -39,7 +39,7 @@ func getConnection() *sql.DB {
 }
 
 func RunQuery(sql string) *sql.Rows {
-	connection := getConnection()
+	connection := GetConnection()
 	data, err := connection.Query(sql)
 	defer connection.Close()
 	if err != nil {

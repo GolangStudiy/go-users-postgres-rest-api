@@ -12,7 +12,7 @@ import (
 var connection *sql.DB
 
 func beforeTests(t *testing.T) {
-	db := postgrescontainer.NewTestDatabase(t)
+	db := postgrescontainer.MountDatabaseContainer(t)
 	dbPort := db.GetPort(t)
 
 	os.Setenv("DB_HOST", "localhost")
@@ -21,7 +21,7 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = getConnection()
+	connection = GetConnection()
 }
 
 type databaseClass struct {

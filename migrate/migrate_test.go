@@ -1,8 +1,7 @@
-package main
+package migrate
 
 import (
 	"database/sql"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"testing"
@@ -26,18 +25,25 @@ func beforeTests(t *testing.T) {
 	connection = databaseclient.GetConnection()
 }
 
-func TestShouldBePrintCorrectMessage(t *testing.T) {
+type tableClass struct {
+	table_name string
+}
+
+func TestShouldBeCreateUsersTable(t *testing.T) {
 	beforeTests(t)
-	rescueStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-	main()
+	Main()
 
-	w.Close()
-	out, _ := ioutil.ReadAll(r)
-	os.Stdout = rescueStdout
+	rows := databaseclient.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
 
-	if string(out) != "App Started" {
-		t.Errorf("Expected %s, got %s", "App Started", out)
+	var table tableClass
+	for rows.Next() {
+		err := rows.Scan(&table.table_name)
+		if err != nil {
+			t.Errorf("The users table should be exists")
+		}
+	}
+
+	if table.table_name != "users" {
+		t.Errorf("The users table should be exists")
 	}
 }
