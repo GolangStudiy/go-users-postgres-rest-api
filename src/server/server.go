@@ -4,12 +4,12 @@ package server
 import (
 	"fmt"
 
-	"github.com/GolangStudiy/go-users-postgres-rest-api/migrate"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
 )
 
 // Go main function
 func Main() {
-	migrate.Main()
+	db.Migrate()
 	msg := "App Started"
 	fmt.Print(msg)
 }

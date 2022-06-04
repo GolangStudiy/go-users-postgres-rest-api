@@ -1,4 +1,4 @@
-package migrate
+package db
 
 import (
 	"log"
@@ -12,7 +12,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Main() {
+func Migrate() {
 	connection := databaseclient.GetConnection()
 	driver, err := postgres.WithInstance(connection, &postgres.Config{})
 

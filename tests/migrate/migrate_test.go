@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/GolangStudiy/go-users-postgres-rest-api/migrate"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
 	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
 	postgrescontainer "github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
@@ -32,7 +32,7 @@ type tableClass struct {
 
 func TestShouldBeCreateUsersTable(t *testing.T) {
 	beforeTests(t)
-	migrate.Main()
+	db.Migrate()
 
 	rows := databaseclient.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
 
