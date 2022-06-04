@@ -28,12 +28,13 @@ func NewTestDatabase(t *testing.T) *TestDatabase {
 		ExposedPorts: []string{"5432/tcp"},
 		AutoRemove:   true,
 		Env: map[string]string{
-			"POSTGRES_USER":     "postgres",
-			"POSTGRES_PASSWORD": "postgres",
-			"POSTGRES_DB":       "postgres",
+			"POSTGRES_USER":     "root",
+			"POSTGRES_PASSWORD": "root",
+			"POSTGRES_DB":       "users",
 		},
 		WaitingFor: wait.ForListeningPort("5432/tcp"),
 	}
+
 	postgres, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: req,
 		Started:          true,
@@ -44,7 +45,7 @@ func NewTestDatabase(t *testing.T) *TestDatabase {
 	}
 }
 
-func (db *TestDatabase) Port(t *testing.T) int {
+func (db *TestDatabase) GetPort(t *testing.T) int {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 	p, err := db.instance.MappedPort(ctx, "5432")
@@ -52,8 +53,8 @@ func (db *TestDatabase) Port(t *testing.T) int {
 	return p.Int()
 }
 
-func (db *TestDatabase) ConnectionString(t *testing.T) string {
-	return fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", db.Port(t))
+func (db *TestDatabase) GetConnectionString(t *testing.T) string {
+	return fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", db.GetPort(t))
 }
 
 func (db *TestDatabase) Close(t *testing.T) {

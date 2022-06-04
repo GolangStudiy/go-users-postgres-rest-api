@@ -4,15 +4,12 @@ import (
 	"io/ioutil"
 	"os"
 	"testing"
-
-	postgrescontainer "github.com/GolangStudiy/go-users-postgres-rest-api/postgrescontainer"
 )
 
 func TestShouldBePrintCorrectMessage(t *testing.T) {
 	rescueStdout := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
-	postgrescontainer.NewTestDatabase(t)
 	main()
 
 	w.Close()
