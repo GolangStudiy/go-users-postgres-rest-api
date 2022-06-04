@@ -49,7 +49,7 @@ func (db *TestDatabase) GetPort(t *testing.T) int {
 	return p.Int()
 }
 
-func (db *TestDatabase) GetConnectionString(t *testing.T) string {
+func (db *TestDatabase) GetDbConnectionString(t *testing.T) string {
 	return fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", db.GetPort(t))
 }
 

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"testing"
 
-	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/src/server"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
@@ -24,7 +24,7 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = databaseclient.GetConnection()
+	connection = configurations.GetDbConnection()
 }
 
 func TestShouldBePrintCorrectMessage(t *testing.T) {

@@ -1,4 +1,4 @@
-package databaseclient
+package configurations
 
 import (
 	"database/sql"
@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func GetConnection() *sql.DB {
+func GetDbConnection() *sql.DB {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	user := os.Getenv("DB_USERNAME")
@@ -18,8 +18,10 @@ func GetConnection() *sql.DB {
 	dbname := os.Getenv("DB_NAME")
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	connection, err := sql.Open("postgres", psqlInfo)
+
 	if err != nil {
 		log.Fatalf("Fail to get database connection : %s", err)
+		return nil
 	}
 
 	err = connection.Ping()
@@ -31,21 +33,24 @@ func GetConnection() *sql.DB {
 			limit = 10
 		}
 	}
+
 	if err != nil {
 		log.Fatalf("Error DB Ping : %s", err)
+		return nil
 	}
 
 	return connection
 }
 
-func RunQuery(sql string) *sql.Rows {
-	connection := GetConnection()
+func RunQuery(sql string) (*sql.Rows, error) {
+	connection := GetDbConnection()
 	data, err := connection.Query(sql)
 	defer connection.Close()
+
 	if err != nil {
 		log.Printf("Error when execute query : %s", err)
-		return nil
+		return nil, err
 	}
 
-	return data
+	return data, nil
 }

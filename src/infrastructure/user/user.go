@@ -1,8 +1,8 @@
-package user
+package infrastructure
 
 import "github.com/google/uuid"
 
-type UserDTO struct {
+type User struct {
 	ID    uuid.UUID `gorm:"primaryKey;column:id"`
 	Email string    `gorm:"column:email"`
 }

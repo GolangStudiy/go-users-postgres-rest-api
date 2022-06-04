@@ -1,4 +1,4 @@
-package migrate
+package tests
 
 import (
 	"database/sql"
@@ -7,14 +7,14 @@ import (
 	"testing"
 
 	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
-	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
-	postgrescontainer "github.com/GolangStudiy/go-users-postgres-rest-api/tests"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
 
 var connection *sql.DB
 
 func beforeTests(t *testing.T) {
-	db := postgrescontainer.MountDatabaseContainer(t)
+	db := tests.MountDatabaseContainer(t)
 	dbPort := db.GetPort(t)
 
 	os.Setenv("DB_HOST", "localhost")
@@ -23,7 +23,7 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = databaseclient.GetConnection()
+	connection = configurations.GetDbConnection()
 }
 
 type tableClass struct {
@@ -34,7 +34,7 @@ func TestShouldBeCreateUsersTable(t *testing.T) {
 	beforeTests(t)
 	db.Migrate()
 
-	rows := databaseclient.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
+	rows := configurations.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
 
 	var table tableClass
 	for rows.Next() {

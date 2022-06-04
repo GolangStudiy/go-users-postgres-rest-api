@@ -1,10 +1,6 @@
-package user
-
-import (
-	"github.com/google/uuid"
-)
+package domain
 
 type UserRepository interface {
-	Post(user User) string
-	GetIdByEmail(email string) uuid.UUID
+	Post(user User) (string, error)
+	GetIdByEmail(email string) (string, error)
 }

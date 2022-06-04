@@ -13,7 +13,7 @@ import (
 )
 
 func Migrate() {
-	connection := databaseclient.GetConnection()
+	connection := databaseclient.GetDbConnection()
 	driver, err := postgres.WithInstance(connection, &postgres.Config{})
 
 	if err != nil {
