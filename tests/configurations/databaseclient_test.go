@@ -6,7 +6,8 @@ import (
 	"strconv"
 	"testing"
 
-	postgrescontainer "github.com/GolangStudiy/go-users-postgres-rest-api/postgrescontainer"
+	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	postgrescontainer "github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
 
 var connection *sql.DB
@@ -21,7 +22,7 @@ func beforeTests(t *testing.T) {
 	os.Setenv("DB_PASSWORD", "root")
 	os.Setenv("DB_NAME", "users")
 
-	connection = GetConnection()
+	connection = databaseclient.GetConnection()
 }
 
 type databaseClass struct {
@@ -39,7 +40,7 @@ func TestShouldBeReturnConnection(t *testing.T) {
 func TestShouldBeReturnAllDatabaseNames(t *testing.T) {
 	beforeTests(t)
 
-	rows := RunQuery("SELECT datname FROM pg_database")
+	rows := databaseclient.RunQuery("SELECT datname FROM pg_database")
 
 	databases := make([]databaseClass, 0)
 	var database databaseClass

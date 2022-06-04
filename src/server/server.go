@@ -1,14 +1,14 @@
-package main
+package server
 
 /// Go fmt import
 import (
 	"fmt"
 
-	migrate "github.com/GolangStudiy/go-users-postgres-rest-api/migrate"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/migrate"
 )
 
 // Go main function
-func main() {
+func Main() {
 	migrate.Main()
 	msg := "App Started"
 	fmt.Print(msg)

@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"database/sql"
@@ -7,14 +7,15 @@ import (
 	"strconv"
 	"testing"
 
-	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/databaseclient"
-	postgrescontainer "github.com/GolangStudiy/go-users-postgres-rest-api/postgrescontainer"
+	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/server"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
 
 var connection *sql.DB
 
 func beforeTests(t *testing.T) {
-	db := postgrescontainer.MountDatabaseContainer(t)
+	db := tests.MountDatabaseContainer(t)
 	dbPort := db.GetPort(t)
 
 	os.Setenv("DB_HOST", "localhost")
@@ -31,7 +32,7 @@ func TestShouldBePrintCorrectMessage(t *testing.T) {
 	rescueStdout := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
-	main()
+	server.Main()
 
 	w.Close()
 	out, _ := ioutil.ReadAll(r)
