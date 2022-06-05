@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
-	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
 
@@ -25,7 +25,7 @@ func beforeTests() {
 	os.Setenv("DB_NAME", "users")
 
 	var err error
-	connection, err = configurations.GetDbConnection()
+	connection, err = infrastructure.GetDbConnection()
 
 	if err != nil {
 		log.Fatal(err)
@@ -40,7 +40,7 @@ func TestShouldBeCreateUsersTable(t *testing.T) {
 	beforeTests()
 	db.Migrate()
 
-	rows, err := configurations.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
+	rows, err := infrastructure.RunQuery("SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name='users'")
 
 	if err != nil {
 		t.Errorf("Query should to return data")

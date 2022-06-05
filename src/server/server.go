@@ -8,13 +8,13 @@ import (
 	"os"
 
 	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
-	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure"
 	"github.com/gorilla/mux"
 )
 
 func (a *App) Initialize() {
 	var err error
-	a.DatabaseConnection, err = configurations.GetDbConnection()
+	a.DatabaseConnection, err = infrastructure.GetDbConnection()
 
 	if err != nil {
 		log.Fatal(err)

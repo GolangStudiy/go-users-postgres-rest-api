@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	domain "github.com/GolangStudiy/go-users-postgres-rest-api/src/domain/user"
-	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/users"
+	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/user"
 	"github.com/gorilla/mux"
 )
 

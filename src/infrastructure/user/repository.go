@@ -3,15 +3,15 @@ package infrastructure
 import (
 	"fmt"
 
-	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
 	domain "github.com/GolangStudiy/go-users-postgres-rest-api/src/domain/user"
+	databaseclient "github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure"
 )
 
 type UserRepository struct {
 }
 
 func (r *UserRepository) Post(domainUser domain.User) (string, error) {
-	rows, err := configurations.RunQuery(
+	rows, err := databaseclient.RunQuery(
 		fmt.Sprintf(
 			"INSERT INTO users (email) VALUES ('%s') RETURNING email;",
 			User{Email: domainUser.Email}.Email,
@@ -31,7 +31,7 @@ func (r *UserRepository) Post(domainUser domain.User) (string, error) {
 }
 
 func (r *UserRepository) GetIdByEmail(email string) (string, error) {
-	rows, err := configurations.RunQuery(fmt.Sprintf("SELECT id FROM users WHERE email = '%s';", email))
+	rows, err := databaseclient.RunQuery(fmt.Sprintf("SELECT id FROM users WHERE email = '%s';", email))
 
 	if err != nil {
 		return "", nil

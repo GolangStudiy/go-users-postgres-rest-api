@@ -9,9 +9,9 @@ import (
 	"testing"
 
 	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
-	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
 	domain "github.com/GolangStudiy/go-users-postgres-rest-api/src/domain/user"
-	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/users"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure"
+	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/user"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 )
 
@@ -28,7 +28,7 @@ func beforeTests() {
 	os.Setenv("DB_NAME", "users")
 
 	var err error
-	connection, err = configurations.GetDbConnection()
+	connection, err = infrastructure.GetDbConnection()
 
 	if err != nil {
 		log.Fatal(err)

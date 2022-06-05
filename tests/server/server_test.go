@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/GolangStudiy/go-users-postgres-rest-api/src/configurations"
+	"github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/src/server"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
 	"github.com/google/uuid"
@@ -31,7 +31,7 @@ func beforeTests() {
 	os.Setenv("DB_NAME", "users")
 
 	var err error
-	connection, err = configurations.GetDbConnection()
+	connection, err = infrastructure.GetDbConnection()
 
 	if err != nil {
 		log.Fatal(err)
