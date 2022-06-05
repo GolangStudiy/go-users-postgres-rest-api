@@ -6,7 +6,13 @@ import (
 )
 
 func Post(email string) (string, error) {
-	email, err := domain.UserRepository.Post(
+	email, err := domain.ValidateEmail(email)
+
+	if err != nil {
+		return "", err
+	}
+
+	email, err = domain.UserRepository.Post(
 		&infrastructure.UserRepository{},
 		domain.User{Email: email},
 	)

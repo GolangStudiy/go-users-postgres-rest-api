@@ -74,6 +74,15 @@ func TestShouldBeSaveUserAndGetIdAfter(t *testing.T) {
 	}
 }
 
+func TestShouldBeReturnErrorWhenEmailIsIncorrectFormat(t *testing.T) {
+	var userJson = []byte(`{"email":"john"}`)
+	req, _ := http.NewRequest("POST", "/users", bytes.NewBuffer(userJson))
+	req.Header.Set("Content-Type", "application/json")
+
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusBadRequest, response.Code)
+}
+
 func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
 		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
