@@ -5,13 +5,13 @@ import (
 	infrastructure "github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure/user"
 )
 
-func Post(domainUser domain.User) (domain.User, error) {
+func Post(email string) (string, error) {
 	email, err := domain.UserRepository.Post(
 		&infrastructure.UserRepository{},
-		domainUser,
+		domain.User{Email: email},
 	)
 
-	return domain.User{Email: email}, err
+	return email, err
 }
 
 func GetIdByEmail(email string) (string, error) {

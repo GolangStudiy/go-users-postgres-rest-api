@@ -46,13 +46,13 @@ func TestShouldBeSaveUserAndGetIdAfter(t *testing.T) {
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusCreated, response.Code)
 
-	var m map[string]interface{}
+	var m string
 	json.Unmarshal(response.Body.Bytes(), &m)
-	b, _ := json.Marshal(m["Email"])
+	b, _ := json.Marshal(m)
 	email := string(b)
 
 	if !strings.Contains(email, "john@doe.com") {
-		t.Errorf("Expected response code %s. Got %s", "john@doe.com", email)
+		t.Errorf("Expected the email %s. Got %s", "john@doe.com", email)
 	}
 
 	req, _ = http.NewRequest("GET", "/users/get-id-by-email/john@doe.com", nil)

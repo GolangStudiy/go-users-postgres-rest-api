@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	domain "github.com/GolangStudiy/go-users-postgres-rest-api/src/domain/user"
 	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/user"
 	"github.com/gorilla/mux"
 )
@@ -15,12 +14,12 @@ func PostUser(w http.ResponseWriter, request *http.Request) {
 	var user RequestUser
 	json.Unmarshal(reqBody, &user)
 
-	responseUser, err := services.Post(domain.User{Email: user.Email})
+	responseEmail, err := services.Post(user.Email)
 
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 	} else {
-		respondWithJSON(w, http.StatusCreated, ResponseUser{Email: responseUser.Email})
+		respondWithJSON(w, http.StatusCreated, responseEmail)
 	}
 }
 

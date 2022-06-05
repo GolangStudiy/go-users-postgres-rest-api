@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/GolangStudiy/go-users-postgres-rest-api/db"
-	domain "github.com/GolangStudiy/go-users-postgres-rest-api/src/domain/user"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/src/infrastructure"
 	services "github.com/GolangStudiy/go-users-postgres-rest-api/src/services/user"
 	"github.com/GolangStudiy/go-users-postgres-rest-api/tests"
@@ -40,14 +39,14 @@ func TestShouldBeCreateUserAndReturnTheEmail(t *testing.T) {
 	db.Migrate()
 
 	email := "john@doe.com"
-	responseUser, err := services.Post(domain.User{Email: email})
+	responseEmail, err := services.Post(email)
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
 	}
 
-	if responseUser.Email != email {
-		t.Errorf("Expected %s, got %s", email, responseUser.Email)
+	if responseEmail != email {
+		t.Errorf("Expected %s, got %s", email, responseEmail)
 	}
 }
 
@@ -56,13 +55,13 @@ func TestShouldBeCreateUserAndReturnTheUUID(t *testing.T) {
 	db.Migrate()
 
 	email := "john@doe.com"
-	responseUser, err := services.Post(domain.User{Email: email})
+	responseEmail, err := services.Post(email)
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
 	}
 
-	id, err := services.GetIdByEmail(responseUser.Email)
+	id, err := services.GetIdByEmail(responseEmail)
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
@@ -78,13 +77,13 @@ func TestShouldBeReturnNullIfTryToPostTheSameEmail(t *testing.T) {
 	db.Migrate()
 
 	email := "john@doe.com"
-	responseUser, err := services.Post(domain.User{Email: email})
+	responseEmail, err := services.Post(email)
 
 	if err != nil {
 		t.Errorf("Should not be have error here")
 	}
 
-	responseUser, err = services.Post(domain.User{Email: string(responseUser.Email)})
+	responseEmail, err = services.Post(string(responseEmail))
 
 	if err == nil || !strings.Contains(err.Error(), "duplicate key value violates unique constraint") {
 		t.Errorf(err.Error())
